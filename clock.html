@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Clock</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;display:flex;align-items:center;
+ justify-content:center;padding:20px;font-family:Arial,sans-serif;
+ background:linear-gradient(145deg,#080d20,#152b4d,#064e63);
+ color:white
+}
+.clock-card{
+ width:100%;max-width:430px;padding:32px 20px;
+ border:1px solid #5eeaff40;border-radius:26px;text-align:center;
+ background:#ffffff0d;box-shadow:0 15px 50px #0005
+}
+.tag{color:#62eaff;letter-spacing:4px;font-size:12px}
+h1{font-size:27px;margin:14px 0 28px}
+#time{
+ font-size:clamp(43px,12vw,68px);font-weight:bold;
+ letter-spacing:1px;color:#70efff;
+ text-shadow:0 0 20px #21dfff70;
+ font-variant-numeric:tabular-nums
+}
+#ampm{font-size:17px;color:#b3eaff;margin-top:8px}
+.line{height:1px;background:#ffffff25;margin:25px 0}
+#day{font-size:23px;font-weight:bold}
+#date{margin-top:10px;color:#b9cee6;font-size:15px}
+#zone{margin-top:12px;color:#78eaff;font-size:13px}
+.controls{display:flex;gap:10px;margin-top:27px}
+button{
+ flex:1;padding:13px 8px;border:1px solid #65e8ff60;
+ border-radius:12px;background:#153852;color:white;
+ font-size:14px;font-weight:bold;cursor:pointer
+}
+button.active{background:#66e7f7;color:#092238}
+footer{margin-top:24px;color:#8ba8c5;font-size:12px}
+</style>
+</head>
+<body>
+<div class="clock-card">
+ <div class="tag">✦ YOUR TIME ✦</div>
+ <h1>Digital Clock</h1>
+ <div id="time">00:00:00</div>
+ <div id="ampm">AM</div>
+ <div class="line"></div>
+ <div id="day">Loading...</div>
+ <div id="date"></div>
+ <div id="zone"></div>
+ <div class="controls">
+  <button id="h12" class="active">12-Hour</button>
+  <button id="h24">24-Hour</button>
+ </div>
+ <footer>Made with ♥ using HTML, CSS & JavaScript</footer>
+</div>
+
+<script>
+let format = 12;
+
+function updateClock(){
+ const now = new Date();
+
+ let hours = now.getHours();
+ const minutes = String(now.getMinutes()).padStart(2,"0");
+ const seconds = String(now.getSeconds()).padStart(2,"0");
+
+ if(format === 12){
+   const suffix = hours >= 12 ? "PM" : "AM";
+   hours = hours % 12 || 12;
+   $("time").textContent =
+     String(hours).padStart(2,"0")+":"+minutes+":"+seconds;
+   $("ampm").textContent = suffix;
+ }else{
+   $("time").textContent =
+     String(hours).padStart(2,"0")+":"+minutes+":"+seconds;
+   $("ampm").textContent = "24-HOUR FORMAT";
+ }
+
+ $("day").textContent = now.toLocaleDateString("en-US",{
+   weekday:"long"
+ });
+ $("date").textContent = now.toLocaleDateString("en-US",{
+   day:"numeric",month:"long",year:"numeric"
+ });
+ $("zone").textContent =
+   "LOCAL TIME · "+Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+function $(id){return document.getElementById(id);}
+
+$("h12").addEventListener("click",()=>{
+ format=12;
+ $("h12").classList.add("active");
+ $("h24").classList.remove("active");
+ updateClock();
+});
+
+$("h24").addEventListener("click",()=>{
+ format=24;
+ $("h24").classList.add("active");
+ $("h12").classList.remove("active");
+ updateClock();
+});
+
+updateClock();
+setInterval(updateClock,1000);
+</script>
+</body>
+</html>
